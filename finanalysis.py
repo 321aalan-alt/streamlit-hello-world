@@ -171,10 +171,8 @@ with tab1:
     st.line_chart(
         stock_data,
         height=400,
-        use_container_width=True,
-        theme="streamlit"
+        use_container_width=True
     )
-
 
 with tab2:
     st.subheader("Daily Stock Returns")
