@@ -28,7 +28,8 @@ def calculate_sortino_ratio(returns, risk_free_rate=0.02):
 def portfolio_optimization(returns):
     return np.ones(len(returns.columns)) / len(returns.columns)
 
-st.title("Financial Analysis Web App")
+st.title("📈 MarketPulse")
+st.caption("Financial Markets & Portfolio Analytics")
 
 # User inputs
 tickers = st.text_input("Enter stock tickers (comma separated)", "AAPL, MSFT, GOOG").split(",")
