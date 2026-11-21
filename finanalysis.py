@@ -21,6 +21,15 @@ st.markdown("""
     background-color: #151F32;
 }
 
+/* Make sidebar text readable */
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] label p {
+    color: #F8FAFC !important;
+}
+
 /* Headings */
 h1, h2, h3 {
     color: #F8FAFC;
@@ -68,10 +77,28 @@ div[data-testid="stMetric"] label * {
     color: #14B8A6;
 }
 
+
 /* Main content spacing */
 .block-container {
     padding-top: 2rem;
     padding-bottom: 3rem;
+}
+
+/* Chart container styling */
+[data-testid="stVegaLiteChart"] {
+    background-color: #151F32;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+/* Make inactive tabs readable */
+.stTabs [data-baseweb="tab"] {
+    color: #94A3B8 !important;
+}
+
+/* Highlight selected tab */
+.stTabs [aria-selected="true"] {
+    color: #14B8A6 !important;
 }
 
 </style>
@@ -144,8 +171,10 @@ with tab1:
     st.line_chart(
         stock_data,
         height=400,
-        use_container_width=True
+        use_container_width=True,
+        theme="streamlit"
     )
+
 
 with tab2:
     st.subheader("Daily Stock Returns")
