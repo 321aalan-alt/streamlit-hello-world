@@ -1,5 +1,20 @@
 import streamlit as st   # add at top with other imports, the rest at the bottom
 
+st.set_page_config(
+    page_title="MarketPulse",
+    page_icon="📈",
+    layout="wide"
+)
+
+st.markdown("""
+<style>
+.stApp {
+    background-color: #0B1220;
+    color: white;
+}
+</style>
+""", unsafe_allow_html=True)
+
 import yfinance as yf
 import pandas as pd
 import numpy as np
