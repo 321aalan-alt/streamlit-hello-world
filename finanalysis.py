@@ -13,7 +13,6 @@ def fetch_data(tickers, start_date, end_date):
     data.columns = tickers
     return data
 
-
 st.title("Financial Analysis Web App")
 
 # User inputs
