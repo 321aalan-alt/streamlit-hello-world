@@ -6,12 +6,62 @@ st.set_page_config(
     layout="wide"
 )
 
+
 st.markdown("""
 <style>
+
+/* Main dashboard background */
 .stApp {
     background-color: #0B1220;
-    color: white;
+    color: #F8FAFC;
 }
+
+/* Sidebar */
+[data-testid="stSidebar"] {
+    background-color: #151F32;
+}
+
+/* Headings */
+h1, h2, h3 {
+    color: #F8FAFC;
+    font-weight: 600;
+}
+
+/* Performance metric cards */
+div[data-testid="stMetric"] {
+    background-color: #151F32;
+    border: 1px solid #263449;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+/* Download buttons */
+.stDownloadButton > button {
+    background-color: #14B8A6;
+    color: #07111F;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 12px 24px;
+}
+
+/* Tab labels */
+.stTabs [data-baseweb="tab"] {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Active tab */
+.stTabs [aria-selected="true"] {
+    color: #14B8A6;
+}
+
+/* Main content spacing */
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -46,36 +96,87 @@ def portfolio_optimization(returns):
 st.title("📈 MarketPulse")
 st.caption("Financial Markets & Portfolio Analytics")
 
-# User inputs
-tickers = st.text_input("Enter stock tickers (comma separated)", "AAPL, MSFT, GOOG").split(",")
-tickers = [ticker.strip() for ticker in tickers]
-start_date = st.date_input("Start Date", pd.to_datetime("2020-01-01"))
-end_date = st.date_input("End Date", pd.to_datetime("2023-01-01"))
+# Sidebar Settings
+with st.sidebar:
+    st.header("⚙️ Portfolio Settings")
+
+    tickers = st.text_input(
+        "Enter Stock Tickers",
+        "AAPL, MSFT, GOOG"
+    ).split(",")
+
+    tickers = [ticker.strip() for ticker in tickers]
+
+    start_date = st.date_input(
+        "Start Date",
+        pd.to_datetime("2020-01-01")
+    )
+
+    end_date = st.date_input(
+        "End Date",
+        pd.to_datetime("2023-01-01")
+    )
 
 # Fetch stock data
 stock_data = fetch_data(tickers, start_date, end_date)
 returns_data = stock_data.pct_change().dropna()
 
 # Visualizations
-st.subheader("Stock Prices")
-st.line_chart(stock_data)
+tab1, tab2 = st.tabs([
+    "📈 Stock Prices",
+    "📉 Daily Returns"
+])
 
-st.subheader("Stock Returns")
-st.line_chart(returns_data)
+with tab1:
+    st.subheader("Stock Price Performance")
+    st.line_chart(
+        stock_data,
+        height=400,
+        use_container_width=True
+    )
+
+with tab2:
+    st.subheader("Daily Stock Returns")
+    st.line_chart(
+        returns_data,
+        height=350,
+        use_container_width=True
+    )
 
 sharpe_ratio = calculate_sharpe_ratio(returns_data)
 sortino_ratio = calculate_sortino_ratio(returns_data)
 
-st.subheader("Performance Metrics")
-st.write(f"Sharpe Ratio: {sharpe_ratio:.2f}")
-st.write(f"Sortino Ratio: {sortino_ratio:.2f}")
+st.subheader("📊 Performance Metrics")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.metric("Sharpe Ratio", f"{sharpe_ratio:.2f}")
+
+with col2:
+    st.metric("Sortino Ratio", f"{sortino_ratio:.2f}")
 
 optimal_weights = portfolio_optimization(returns_data)
 
-st.subheader("Portfolio Optimization")
-st.write("Optimal Portfolio Weights:")
-for ticker, weight in zip(tickers, optimal_weights):
-    st.write(f"{ticker}: {weight:.2%}")
+st.subheader("💼 Portfolio Allocation")
+
+allocation_data = pd.DataFrame({
+    "Stock": tickers,
+    "Weight": optimal_weights
+})
+
+st.write("Portfolio Weight Distribution")
+
+st.bar_chart(
+    allocation_data.set_index("Stock"),
+    height=300
+)
+
+st.dataframe(
+    allocation_data.style.format({"Weight": "{:.2%}"}),
+    hide_index=True,
+    use_container_width=True
+)
 
 csv_data = stock_data.to_csv()
 st.download_button("Download Stock Data CSV", csv_data, "stock_data.csv")
