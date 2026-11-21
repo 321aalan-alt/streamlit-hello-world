@@ -35,6 +35,18 @@ div[data-testid="stMetric"] {
     padding: 20px;
 }
 
+/* Make metric numbers white */
+div[data-testid="stMetricValue"],
+div[data-testid="stMetricValue"] * {
+    color: white !important;
+}
+
+/* Make metric labels light gray */
+div[data-testid="stMetric"] label,
+div[data-testid="stMetric"] label * {
+    color: #94A3B8 !important;
+}
+
 /* Download buttons */
 .stDownloadButton > button {
     background-color: #14B8A6;
